@@ -17,13 +17,8 @@ class ProcessTheClient(threading.Thread):
             if data:
                 d = data.decode()
 
-                # if d != 'TIME\r\nQUIT\r\n':
-                #     hasil = 'Unknown command\r\n'
-                # else:
-                #     hasil = 'JAM \r\n'
-
                 if d == 'TIME\r\n':
-                    hasil = 'JAM\r\n'
+                    hasil = f'JAM {time.strftime("%H:%M:%S", time.localtime())}\r\n'
                 elif d == 'QUIT\r\n':
                     break
                 else:
@@ -57,7 +52,7 @@ class Server(threading.Thread):
 
 
 def main():
-    svr = Server(ipaddress='0.0.0.0',port=6666)
+    svr = Server(ipaddress='0.0.0.0',port=45000)
     svr.start()
 
 
