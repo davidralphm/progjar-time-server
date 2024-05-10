@@ -11,7 +11,8 @@ def send_command(command_str=""):
     sock.connect(server_address)
     logging.warning(f"Connecting to {server_address}")
     try:
-        logging.warning(f"Sending command '{command_str}'")
+        command_txt = command_str.replace('\r', '\\r').replace('\n', '\\n')
+        logging.warning(f"Sending command '{command_txt}'")
         sock.sendall(command_str.encode())
         # Look for the response, waiting until socket is done (no more data)
         data_received="" #empty string
