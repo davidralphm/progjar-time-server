@@ -3,7 +3,7 @@ import json
 import base64
 import logging
 
-server_address=('127.0.0.1', 45000)
+server_address=('172.16.16.101', 45000)
 
 def send_command(command_str=""):
     global server_address
