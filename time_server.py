@@ -17,16 +17,16 @@ class ProcessTheClient(threading.Thread):
             if data:
                 d = data.decode()
 
-                if d != 'TIME\r\nQUIT\r\n':
-                    hasil = 'Unknown command\r\n'
-                else:
+                if d == 'TIME\r\n':
                     hasil = f'JAM {time.strftime("%H:%M:%S", time.localtime())}\r\n'
+                elif d == 'QUIT\r\n':
+                    break
+                else:
+                    hasil = 'Unknown command\r\n'
 
                 self.connection.sendall(hasil.encode())
-                break
-            else:
-                break
         
+        print('Closing connection')
         self.connection.close()
 
 
@@ -39,12 +39,12 @@ class Server(threading.Thread):
         threading.Thread.__init__(self)
 
     def run(self):
-        logging.warning(f"Server berjalan di ip address {self.ipinfo}")
+        logging.warning(f"server berjalan di ip address {self.ipinfo}")
         self.my_socket.bind(self.ipinfo)
         self.my_socket.listen(1)
         while True:
             self.connection, self.client_address = self.my_socket.accept()
-            logging.warning(f"Connection from {self.client_address}")
+            logging.warning(f"connection from {self.client_address}")
 
             clt = ProcessTheClient(self.connection, self.client_address)
             clt.start()

@@ -5,14 +5,13 @@ import logging
 
 server_address=('172.16.16.101', 45000)
 
-def send_command(command_str=""):
+def send_command(sock, command_str=""):
     global server_address
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.connect(server_address)
-    logging.warning(f"Connecting to {server_address}")
+
+    logging.warning(f"connecting to {server_address}")
+
     try:
-        command_txt = command_str.replace('\r', '\\r').replace('\n', '\\n')
-        logging.warning(f"Sending command '{command_txt}'")
+        logging.warning(f"sending message ")
         sock.sendall(command_str.encode())
         # Look for the response, waiting until socket is done (no more data)
         data_received="" #empty string
@@ -30,15 +29,22 @@ def send_command(command_str=""):
         # at this point, data_received (string) will contain all data coming from the socket
         # to be able to use the data_received as a dict, need to load it using json.loads()
 
-        logging.warning("Data received from server:")
+        logging.warning("data received from server:")
         return data_received
     except Exception as e:
         print(str(e))
-        logging.warning("Error during data receiving")
+        logging.warning("error during data receiving")
         return False
 
 
 if __name__=='__main__':
-    print(send_command('TIME\r\nQUIT\r\n'))
-    print(send_command('TIM\r\nQUIT\r\n'))
-    print(send_command('TIME\r\nQUI\r\n'))
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.connect(server_address)
+
+    while True:
+        command = input()
+
+        print(send_command(sock, command + '\r\n'), end='')
+
+        if command == 'QUIT':
+            break
